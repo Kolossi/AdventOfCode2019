@@ -6,235 +6,313 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="OneOf" Version="2.1.108" />
+    <None Remove="Inputs\Day01First.txt" />
+    <None Remove="Inputs\Day01FirstTests.txt" />
+    <None Remove="Inputs\Day01SecondTests.txt" />
+    <None Remove="Inputs\Day02First.txt" />
+    <None Remove="Inputs\Day02FirstTests.txt" />
+    <None Remove="Inputs\Day02SecondTests.txt" />
+    <None Remove="Inputs\Day03First.txt" />
+    <None Remove="Inputs\Day03FirstTests.txt" />
+    <None Remove="Inputs\Day03SecondTests.txt" />
+    <None Remove="Inputs\Day04First.txt" />
+    <None Remove="Inputs\Day04FirstTests.txt" />
+    <None Remove="Inputs\Day04SecondTests.txt" />
+    <None Remove="Inputs\Day05First.txt" />
+    <None Remove="Inputs\Day05FirstTests.txt" />
+    <None Remove="Inputs\Day05SecondTests.txt" />
+    <None Remove="Inputs\Day06First.txt" />
+    <None Remove="Inputs\Day06FirstTests.txt" />
+    <None Remove="Inputs\Day06SecondTests.txt" />
+    <None Remove="Inputs\Day07First.txt" />
+    <None Remove="Inputs\Day07FirstTests.txt" />
+    <None Remove="Inputs\Day07SecondTests.txt" />
+    <None Remove="Inputs\Day08First.txt" />
+    <None Remove="Inputs\Day08FirstTests.txt" />
+    <None Remove="Inputs\Day08SecondTests.txt" />
+    <None Remove="Inputs\Day09First.txt" />
+    <None Remove="Inputs\Day09FirstTests.txt" />
+    <None Remove="Inputs\Day09SecondTests.txt" />
+    <None Remove="Inputs\Day10First.txt" />
+    <None Remove="Inputs\Day10FirstTests.txt" />
+    <None Remove="Inputs\Day10SecondTests.txt" />
+    <None Remove="Inputs\Day11First.txt" />
+    <None Remove="Inputs\Day11FirstTests.txt" />
+    <None Remove="Inputs\Day11SecondTests.txt" />
+    <None Remove="Inputs\Day12First.txt" />
+    <None Remove="Inputs\Day12FirstTests.txt" />
+    <None Remove="Inputs\Day12SecondTests.txt" />
+    <None Remove="Inputs\Day13First.txt" />
+    <None Remove="Inputs\Day13FirstTests.txt" />
+    <None Remove="Inputs\Day13SecondTests.txt" />
+    <None Remove="Inputs\Day14First.txt" />
+    <None Remove="Inputs\Day14FirstTests.txt" />
+    <None Remove="Inputs\Day14SecondTests.txt" />
+    <None Remove="Inputs\Day15First.txt" />
+    <None Remove="Inputs\Day15FirstTests.txt" />
+    <None Remove="Inputs\Day15SecondTests.txt" />
+    <None Remove="Inputs\Day16First.txt" />
+    <None Remove="Inputs\Day16FirstTests.txt" />
+    <None Remove="Inputs\Day16SecondTests.txt" />
+    <None Remove="Inputs\Day17First.txt" />
+    <None Remove="Inputs\Day17FirstTests.txt" />
+    <None Remove="Inputs\Day17SecondTests.txt" />
+    <None Remove="Inputs\Day18First.txt" />
+    <None Remove="Inputs\Day18FirstTests.txt" />
+    <None Remove="Inputs\Day18SecondTests.txt" />
+    <None Remove="Inputs\Day19First.txt" />
+    <None Remove="Inputs\Day19FirstTests.txt" />
+    <None Remove="Inputs\Day19SecondTests.txt" />
+    <None Remove="Inputs\Day20First.txt" />
+    <None Remove="Inputs\Day20FirstTests.txt" />
+    <None Remove="Inputs\Day20SecondTests.txt" />
+    <None Remove="Inputs\Day21First.txt" />
+    <None Remove="Inputs\Day21FirstTests.txt" />
+    <None Remove="Inputs\Day21SecondTests.txt" />
+    <None Remove="Inputs\Day22First.txt" />
+    <None Remove="Inputs\Day22FirstTests.txt" />
+    <None Remove="Inputs\Day22SecondTests.txt" />
+    <None Remove="Inputs\Day23First.txt" />
+    <None Remove="Inputs\Day23FirstTests.txt" />
+    <None Remove="Inputs\Day23SecondTests.txt" />
+    <None Remove="Inputs\Day24First.txt" />
+    <None Remove="Inputs\Day24FirstTests.txt" />
+    <None Remove="Inputs\Day24SecondTests.txt" />
+    <None Remove="Inputs\Day25First.txt" />
+    <None Remove="Inputs\Day25FirstTests.txt" />
+    <None Remove="Inputs\Day25SecondTests.txt" />
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="Inputs\Day01First.txt">
+    <Content Include="Inputs\Day01First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day01FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day01FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day01SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day01SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day02First.txt">
+    </Content>
+    <Content Include="Inputs\Day02First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day02FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day02FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day02SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day02SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day03First.txt">
+    </Content>
+    <Content Include="Inputs\Day03First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day03FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day03FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day03SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day03SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day04First.txt">
+    </Content>
+    <Content Include="Inputs\Day04First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day04FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day04FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day04SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day04SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day05First.txt">
+    </Content>
+    <Content Include="Inputs\Day05First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day05FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day05FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day05SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day05SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day06First.txt">
+    </Content>
+    <Content Include="Inputs\Day06First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day06FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day06FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day06SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day06SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day07First.txt">
+    </Content>
+    <Content Include="Inputs\Day07First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day07FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day07FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day07SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day07SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day08First.txt">
+    </Content>
+    <Content Include="Inputs\Day08First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day08FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day08FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day08SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day08SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day09First.txt">
+    </Content>
+    <Content Include="Inputs\Day09First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day09FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day09FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day09SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day09SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day10First.txt">
+    </Content>
+    <Content Include="Inputs\Day10First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day10FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day10FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day10SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day10SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day11First.txt">
+    </Content>
+    <Content Include="Inputs\Day11First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day11FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day11FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day11SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day11SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day12First.txt">
+    </Content>
+    <Content Include="Inputs\Day12First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day12FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day12FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day12SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day12SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day13First.txt">
+    </Content>
+    <Content Include="Inputs\Day13First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day13FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day13FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day13SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day13SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day14First.txt">
+    </Content>
+    <Content Include="Inputs\Day14First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day14FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day14FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day14SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day14SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day15First.txt">
+    </Content>
+    <Content Include="Inputs\Day15First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day15FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day15FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day15SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day15SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day16First.txt">
+    </Content>
+    <Content Include="Inputs\Day16First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day16FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day16FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day16SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day16SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day17First.txt">
+    </Content>
+    <Content Include="Inputs\Day17First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day17FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day17FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day17SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day17SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day18First.txt">
+    </Content>
+    <Content Include="Inputs\Day18First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day18FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day18FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day18SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day18SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day19First.txt">
+    </Content>
+    <Content Include="Inputs\Day19First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day19FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day19FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day19SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day19SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day20First.txt">
+    </Content>
+    <Content Include="Inputs\Day20First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day20FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day20FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day20SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day20SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day21First.txt">
+    </Content>
+    <Content Include="Inputs\Day21First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day21FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day21FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day21SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day21SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day22First.txt">
+    </Content>
+    <Content Include="Inputs\Day22First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day22FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day22FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day22SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day22SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day23First.txt">
+    </Content>
+    <Content Include="Inputs\Day23First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day23FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day23FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day23SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day23SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day24First.txt">
+    </Content>
+    <Content Include="Inputs\Day24First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day24FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day24FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day24SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day24SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day25First.txt">
+    </Content>
+    <Content Include="Inputs\Day25First.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day25FirstTests.txt">
+    </Content>
+    <Content Include="Inputs\Day25FirstTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
-    <None Update="Inputs\Day25SecondTests.txt">
+    </Content>
+    <Content Include="Inputs\Day25SecondTests.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-    </None>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="OneOf" Version="2.1.108" />
   </ItemGroup>
 
 </Project>
