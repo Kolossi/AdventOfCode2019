@@ -118,7 +118,15 @@ namespace Runner
             { 'n',Direction.North},
             { 'e',Direction.East},
             { 's',Direction.South},
-            { 'w',Direction.West }
+            { 'w',Direction.West },
+            { 'U',Direction.North},
+            { 'R',Direction.East},
+            { 'D',Direction.South},
+            { 'L',Direction.West },
+            { 'u',Direction.North},
+            { 'r',Direction.East},
+            { 'd',Direction.South},
+            { 'l',Direction.West },
         };
     }
 
@@ -329,22 +337,24 @@ namespace Runner
             yDict[x] = value;
         }
 
-        public string GetStateString(Dictionary<T,char> valueMap)
+        public string GetStateString(Dictionary<T, char> valueMap)
+        {
+            var sb = new StringBuilder();
+            var minPos = GetMinPos();
+            var maxPos = GetMaxPos();
+            sb.AppendFormat("{0}->{1}", minPos, maxPos).AppendLine();
+            for (int y = minPos.Y; y <= maxPos.Y; y++)
             {
-                var sb = new StringBuilder();
-                var minPos = GetMinPos();
-                var maxPos = GetMaxPos();
-                sb.AppendFormat("{0}->{1}", minPos, maxPos).AppendLine();
-                for (int y = minPos.Y; y <= maxPos.Y; y++)
+                for (int x = minPos.X; x <= maxPos.X; x++)
                 {
-                    for (int x = minPos.X; x <= maxPos.X; x++)
-                    {
-                        sb.Append(valueMap[Get(x,y)]);
-                    }
-                    sb.AppendLine();
+                    T value;
+                    TryGetValue(x, y, out value);
+                    sb.Append(valueMap[value]);
                 }
-                return sb.ToString();
+                sb.AppendLine();
             }
+            return sb.ToString();
+        }
 
     }
 }
