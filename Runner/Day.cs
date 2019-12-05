@@ -69,6 +69,8 @@ namespace Runner
             return Test("Second", this.SecondTest);
         }
 
+        public static bool ShowInputForOKTest = true;
+
         public bool Test(string set, Func<string, string> solver)
         {
             bool result = true;
@@ -132,7 +134,8 @@ namespace Runner
                     }
                     else
                     {
-                        Console.WriteLine(string.Format("    {0} : OK", line));
+                        if (ShowInputForOKTest) Console.Write(string.Format("    {0} : ", line));
+                        Console.WriteLine("OK");
                     }
                 }
                 catch (NotImplementedException)

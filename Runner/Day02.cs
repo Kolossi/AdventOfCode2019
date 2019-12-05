@@ -9,38 +9,58 @@ namespace Runner
     {
         public override string First(string input)
         {
-            // not 337106 too low - read the question, reset data first!
+            // not 337106 too low - read the question, set noun & verb first!
+            Day.LogEnabled = false;
             int[] data = input.GetParts(",").Select(i => int.Parse(i)).ToArray();
-            int noun = 12;
-            int verb = 2;
-            return Intcode.Rerun(data, noun, verb)[0].ToString();
+            var intcode = new Intcode() { Noun = 12, Verb = 2 };
+            return intcode.Execute(data)[0].ToString();
         }
 
         public override string Second(string input)
         {
+            Day.LogEnabled = false;
             int[] data = input.GetParts(",").Select(i => int.Parse(i)).ToArray();
+            var intcode = new Intcode();
             return Solve(data, 19690720);
         }
 
         public override string FirstTest(string input)
         {
-            return Intcode.Execute(input.GetParts(",").Select(i => int.Parse(i)).ToArray())[0].ToString();
+            Day.LogEnabled = false;
+            Day.ShowInputForOKTest = false;
+            var parts = input.Split(";");
+            var testtype = parts[0];
+            input = parts[1];
+            if (testtype=="F")
+            {
+                return First(input);
+            }
+            else
+            {
+                var intcode = new Intcode();
+                int[] data = input.GetParts(",").Select(i => int.Parse(i)).ToArray();
+                return intcode.Execute(data)[0].ToString();
+            }
         }
 
-        public override string SecondTest(string input)
-        {
-            throw new NotImplementedException("SecondTest");
-        }
+//        public override string SecondTest(string input)
+//        {
+//            throw new NotImplementedException("SecondTest");
+//        }
 
         ////////////////////////////////////////////////////////
 
         public string Solve(int[] data, int target)
         {
-            for (int verb = 0; verb < 100; verb++)
+            var intcode = new Intcode();
+
+            for (int verb = 14; verb < 100; verb++)
             {
-                for (int noun = 0; noun < 100; noun++)
+                intcode.Verb = verb;
+                for (int noun = 70; noun < 100; noun++)
                 {
-                    if (Intcode.Rerun(data, noun, verb)[0] == target)
+                    intcode.Noun = noun;
+                    if (intcode.Execute(Intcode.CloneData(data))[0] == target)
                         return string.Format("{0}{1}", noun, verb);
                 }
             }
