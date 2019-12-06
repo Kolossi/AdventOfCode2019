@@ -178,7 +178,7 @@ namespace Runner
             return newArgs.ToArray();
         }
 
-        private static object ConvertEnumerableArgToCSVString(object a)
+        public static object ConvertEnumerableArgToCSVString(object a)
         {
             object newArg;
             if (a is System.Collections.IEnumerable && !(a is string))
