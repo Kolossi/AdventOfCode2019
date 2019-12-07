@@ -14,9 +14,21 @@ namespace Runner
         public int? Noun;
         public int? Verb;
         public bool Halt = false;
-        public int Ptr;
+        public bool AwaitingInput = false;
+        public int Ptr = 0;
+        private int[] Data;
 
         private const int MAXPARAMS = 3;
+
+        public Intcode()
+        {
+        }
+
+        public Intcode(int initialInput, int[] data)
+        {
+            Data = CloneData(data);
+            InputQueue.Enqueue(initialInput);
+        }
 
         public static int[] CloneData(int[] data)
         {
@@ -29,20 +41,27 @@ namespace Runner
         {
             if (Noun.HasValue) data[1] = Noun.Value;
             if (Verb.HasValue) data[2] = Verb.Value;
+            Data = data;
             Ptr = 0;
+            return Resume();
+        }
+
+        public int[] Resume()
+        {
+            AwaitingInput = false;
             while (true)
             {
-                var instructionBlock = GetInstructionBlock(data, Ptr);
+                var instructionBlock = GetInstructionBlock(Data, Ptr);
                 Day.Log(Ptr);
                 Day.Log(":");
                 Day.LogLine(instructionBlock);
-                Day.LogLine(data);
-                data = instructionBlock.OpDef.Function(this, data, instructionBlock.Parameters);
+                Day.LogLine(Data);
+                Data = instructionBlock.OpDef.Function(this, Data, instructionBlock.Parameters);
                 if (instructionBlock.OpDef.AutoUpdatePtr) Ptr += instructionBlock.OpDef.NumParams + 1;
-                if (Ptr >= data.Length) throw new IndexOutOfRangeException("ptr past end of data");
-                if (this.Halt) break;
+                if (Ptr >= Data.Length) throw new IndexOutOfRangeException("ptr past end of Data");
+                if (this.Halt|| this.AwaitingInput) break;
             }
-            return data;
+            return Data;
         }
 
         private static InstructionBlock GetInstructionBlock(int[] data, int ptr)
@@ -115,8 +134,14 @@ namespace Runner
 
         public static int[] StoreInput(Intcode intcode, int[] data, Parameter[] parameters)
         {
+            if (!intcode.InputQueue.Any())
+            {
+                intcode.AwaitingInput = true;
+                return data;
+            }
             int value = intcode.InputQueue.Dequeue();
             Intcode.Store(data, value, parameters[0]);
+            intcode.Ptr += 2;
             return data;
         }
 
@@ -187,7 +212,8 @@ namespace Runner
             { 3, new OpDef() {
                      Opcode = 3,
                      NumParams = 1,
-                     Function = OpDef.StoreInput
+                     Function = OpDef.StoreInput,
+                     AutoUpdatePtr = false
                  }
             },
             { 4, new OpDef() {
