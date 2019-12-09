@@ -9,17 +9,29 @@ namespace Runner
     {
         public override string First(string input)
         {
-            throw new NotImplementedException("First");
+            var intcode = new IntcodeV2();
+            long[] data = input.GetParts(",").Select(i => long.Parse(i)).ToArray();
+            intcode.InputQueue.Enqueue(1);
+            intcode.Execute(data);
+            return string.Join(",",intcode.OutputQueue);
         }
 
         public override string Second(string input)
         {
-            throw new NotImplementedException("Second");
+            var intcode = new IntcodeV2();
+            long[] data = input.GetParts(",").Select(i => long.Parse(i)).ToArray();
+            intcode.InputQueue.Enqueue(2);
+            intcode.Execute(data);
+            return string.Join(",",intcode.OutputQueue);
         }
 
         public override string FirstTest(string input)
         {
-            throw new NotImplementedException("FirstTest");
+            Day.LogEnabled = false;
+            var intcode = new IntcodeV2();
+            long[] data = input.GetParts(",").Select(i => long.Parse(i)).ToArray();
+            intcode.Execute(data);
+            return string.Join(",",intcode.OutputQueue);
         }
 
         public override string SecondTest(string input)
