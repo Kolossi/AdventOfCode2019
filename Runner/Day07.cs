@@ -97,7 +97,7 @@ namespace Runner
                     Intcode intcode = intcodes[i];
                     intcode.InputQueue.Enqueue(lastOutput);
                     intcode.Resume();
-                    lastOutput = intcode.OutputQueue.Dequeue();
+                    lastOutput = (int)intcode.OutputQueue.Dequeue();
                 }
             } while (feedback && !intcodes[phases.Length - 1].Halt);
             return lastOutput;

@@ -9,7 +9,7 @@ namespace Runner
     {
         public override string First(string input)
         {
-            var intcode = new IntcodeV2();
+            var intcode = new Intcode();
             long[] data = input.GetParts(",").Select(i => long.Parse(i)).ToArray();
             intcode.InputQueue.Enqueue(1);
             intcode.Execute(data);
@@ -18,17 +18,16 @@ namespace Runner
 
         public override string Second(string input)
         {
-            var intcode = new IntcodeV2();
             long[] data = input.GetParts(",").Select(i => long.Parse(i)).ToArray();
-            intcode.InputQueue.Enqueue(2);
-            intcode.Execute(data);
+            var intcode = new Intcode(2, data);
+            intcode.Resume();
             return string.Join(",",intcode.OutputQueue);
         }
 
         public override string FirstTest(string input)
         {
             Day.LogEnabled = false;
-            var intcode = new IntcodeV2();
+            var intcode = new Intcode();
             long[] data = input.GetParts(",").Select(i => long.Parse(i)).ToArray();
             intcode.Execute(data);
             return string.Join(",",intcode.OutputQueue);
