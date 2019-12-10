@@ -97,6 +97,11 @@ namespace Runner
             return xys;
         }
 
+        public int GetManhattanDistanceTo(XY other)
+        {
+            return Math.Abs(X - other.X) + Math.Abs(Y - other.Y);
+        }
+
         public static Dictionary<Direction, char> DirToChar = new Dictionary<Direction, char>()
         {
             { Direction.North,'^'},
