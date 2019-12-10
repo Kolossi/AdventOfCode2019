@@ -129,12 +129,17 @@ namespace Runner
                     {
                         result = false;
                         Console.WriteLine(string.Format("    {0} : FAILED", line));
-                        Console.WriteLine(string.Format("      Input : {0}, Expected : {1}, Got : {2}", testInput,
-                            expectedOutput, output));
+                        Console.WriteLine(string.Format("      Input :{3}{0}, Expected : {1}, Got : {2}", testInput,
+                            expectedOutput, output, testInput.Contains(Environment.NewLine) ? Environment.NewLine : " "));
                     }
                     else
                     {
-                        if (ShowInputForOKTest) Console.Write(string.Format("    {0} : ", line));
+                        if (ShowInputForOKTest)
+                        {
+                            Console.Write(string.Format("{1}{0} : ",
+                                line,
+                                line.Contains(Environment.NewLine) ? Environment.NewLine : "    "));
+                        }
                         Console.WriteLine("OK");
                     }
                 }
