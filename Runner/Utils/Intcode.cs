@@ -26,6 +26,11 @@ namespace Runner
         {
         }
 
+        public Intcode(long[] data)
+        {
+            Data = CloneData(data);
+        }
+
         public Intcode(long initialInput, int[] data)
         {
             Data = data.Select(i=>(long)i).ToArray();

@@ -142,4 +142,18 @@ namespace Runner
         South = 2,
         West = 3
     }
+
+    public static class DirectionExtensions
+    {
+        public static Direction TurnRight(this Direction direction)
+        {
+            return (Direction)(((int)direction + 1 + 4) % 4);
+        }
+
+        public static Direction TurnLeft(this Direction direction)
+        {
+            return (Direction)(((int)direction - 1 + 4) % 4);
+        }
+
+    }
 }
