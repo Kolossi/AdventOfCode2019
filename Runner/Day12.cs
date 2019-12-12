@@ -14,8 +14,8 @@ namespace Runner
             var count = int.Parse(lines[0]);
             lines = lines.Skip(1).ToArray();
             var moons = Moon.GetMoons(lines);
-            moons = Iterate(moons, count);
-            return GetEnergy(moons).ToString();
+            var result = Iterate(moons.Values.ToList(), count);
+            return GetEnergy(result).ToString();
         }
 
         public override string Second(string input)
@@ -30,16 +30,19 @@ namespace Runner
 
         public override string SecondTest(string input)
         {
+            LogLine("3 Result: {0}", DetectLoop(new long[] { 1, 5, 7, 3, 6, 8, 2, 9, 3, 6, 8 },3));
+            LogLine("2 Result: {0}", DetectLoop(new long[] { 1, 5, 7, 3, 6, 8, 2, 9, 3, 6, 8 },2));
             var lines = input.GetLines();
             var count = int.Parse(lines[0]);
             lines = lines.Skip(1).ToArray();
             var moons = Moon.GetMoons(lines);
-            var moonMovements = GetMoonMovements(moons, count);
+            var moonMovements = GetMoonMovements(moons.Values.ToList(), count);
 
             var moonLoopLengths = new List<long>();
 
             LogEnabled = true;
-            foreach (var moon in moons)
+            var velocityPeriods = new List<long>();
+            foreach (var moonId in moons.Keys)
             {
                 //LogLine("Moon {0}:{1}",moon.Id,Enumerable.Range(0,count).Select(i => GetEnergy(moonMovements[moon.Id][i])));
                 //var moonEnergies = Enumerable.Range(0, count).Select(i => GetEnergy(moonMovements[moon.Id][i])).ToArray();
@@ -48,24 +51,45 @@ namespace Runner
                 ////LogLine("moon {0}:{1}", moon.Id, moonEnergies);
                 //LogLine("moon {0}: 0 energy indexes {1}", moon.Id, zeroEnergyIndexes);
                 //LogLine("Moon {0}: Loop length: {1}", moon.Id, zeroEnergyIndexes[1]);
-                var moonEnergies = Enumerable.Range(0, count).Select(i => GetEnergy(moonMovements[moon.Id][i])).ToArray();
-                var moonStopIndexes = Enumerable.Range(0, count).Where(i => moonMovements[moon.Id][i].IsStationary()).ToArray();
-                moonLoopLengths.Add(moonStopIndexes[1]);
+                //var moonEnergies = Enumerable.Range(0, count).Select(i => GetEnergy(moonMovements[moonId][i])).ToArray();
+                //var moonStopIndexes = Enumerable.Range(0, count).Where(i => moonMovements[moonId][i].Equals(moons[moonId])).ToArray();
+                //moonLoopLengths.Add(moonStopIndexes[1]);
                 //LogLine("moon {0}:{1}", moon.Id, moonEnergies);
-                LogLine("moon {0}: 0 energy indexes {1}", moon.Id, moonStopIndexes);
-                LogLine("Moon {0}: Loop length: {1}", moon.Id, moonStopIndexes[1]);
+                //LogLine("moon {0}: 0 energy indexes {1}", moonId, moonStopIndexes);
+                //LogLine("Moon {0}: Loop length: {1}", moonId, moonStopIndexes[1]);
+
+                var xVelocityZeroPeriod = Enumerable.Range(0, count).Where(i => moonMovements[moonId][i].Velocity.X == 0).ToArray();
+                var yVelocityZeroPeriod = Enumerable.Range(0, count).Where(i => moonMovements[moonId][i].Velocity.Y == 0).ToArray();
+                var zVelocityZeroPeriod = Enumerable.Range(0, count).Where(i => moonMovements[moonId][i].Velocity.Z == 0).ToArray();
+
+                var xVelocityPeriod = DetectLoop(moonMovements[moonId].Select(m => m.Velocity.X),2);
+                var yVelocityPeriod = DetectLoop(moonMovements[moonId].Select(m => m.Velocity.Y),2);
+                var zVelocityPeriod = DetectLoop(moonMovements[moonId].Select(m => m.Velocity.Z),2);
+
+                //LogLine("Moon {0}: X velocity Period: {1}", moonId, xVelocityZeroPeriod);
+                //LogLine("Moon {0}: Y velocity Period: {1}", moonId, yVelocityZeroPeriod);
+                //LogLine("Moon {0}: Z velocity Period: {1}", moonId, zVelocityZeroPeriod);
+
+                LogLine("Moon {0}: X velocity Period: {1}", moonId, xVelocityPeriod);
+                LogLine("Moon {0}: Y velocity Period: {1}", moonId, yVelocityPeriod);
+                LogLine("Moon {0}: Z velocity Period: {1}", moonId, zVelocityPeriod);
+                velocityPeriods.Add(xVelocityPeriod.LoopLength);
+                velocityPeriods.Add(yVelocityPeriod.LoopLength);
+                velocityPeriods.Add(zVelocityPeriod.LoopLength);
             }
+
             //Log(Enumerable.Range(0,count).Select(i => GetEnergy(moonMovements.Values.Select(v => v[i]))));
 
             //Animate(moonMovements);
-            var lcmSoFar = moonLoopLengths[0];
-            for (int i = 1; i < moonLoopLengths.Count; i++)
-            {
-                lcmSoFar = LowestCommonMultiple(lcmSoFar, moonLoopLengths[i]);
-            }
-            LogLine("moons loop length = {0}", lcmSoFar);
-            var loopResult = DetectLoop(moonMovements[moons[0].Id]);
-
+            //var lcmSoFar = moonLoopLengths[0];
+            //for (int i = 1; i < moonLoopLengths.Count; i++)
+            //{
+            //    lcmSoFar = LowestCommonMultiple(lcmSoFar, moonLoopLengths[i]);
+            //}
+            //LogLine("moons loop length = {0}", lcmSoFar);
+            //var loopResult = DetectLoop(moonMovements[moons[0].Id]);
+            LogLine("velocity periods: {0}", velocityPeriods);
+            var loopResult = LowestCommonMultiple(velocityPeriods);
 
             return loopResult.ToString();
         }
@@ -185,10 +209,10 @@ namespace Runner
                 };
             }
 
-            public static List<Moon> GetMoons(string[] lines)
+            public static Dictionary<int, Moon> GetMoons(string[] lines)
             {
                 NEXTID = 0;
-                var moons = new List<Moon>();
+                var moons = new Dictionary<int, Moon>();
                 foreach (var line in lines)
                 {
                     var parts = line.GetParts("<>=xyz,");
@@ -202,7 +226,7 @@ namespace Runner
                         },
                         Velocity = new XYZ() { X = 0, Y = 0, Z = 0 }
                     };
-                    moons.Add(moon);
+                    moons[moon.Id]=moon;
                 }
 
                 return moons;
@@ -211,11 +235,22 @@ namespace Runner
 
         List<Moon> Iterate(List<Moon> moons, int count)
         {
+            var result = new List<Moon>();
+            foreach (var moon in moons)
+            {
+                result.Add(new Moon()
+                {
+                    Id = moon.Id,
+                    Position = moon.Position,
+                    Velocity = moon.Velocity
+                });
+            }
+                
             for (int i = 0; i < count; i++)
             {
-                IterateOne(moons);
+                IterateOne(result);
             }
-            return moons;
+            return result;
         }
 
         private static void IterateOne(List<Moon> moons)
@@ -296,6 +331,17 @@ namespace Runner
         static long LowestCommonMultiple(long a, long b)
         {
             return (a / GreatestCommonFactor(a, b)) * b;
+        }
+
+        static long LowestCommonMultiple(IList<long> items)
+        {
+            var lcm = items[0];
+            for (int i = 1; i < items.Count; i++)
+            {
+                lcm = LowestCommonMultiple(lcm, items[i]);
+            }
+
+            return lcm;
         }
     }
 }

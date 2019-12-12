@@ -273,20 +273,29 @@ namespace Runner
             return true;
         }
 
-        public LoopResult DetectLoop<T>(IEnumerable<T> results, int startPosition = 0)
+        public LoopResult DetectLoop<T>(IEnumerable<T> results, int matchesRequired = 3)
         {
-            if (results.Count() <= 2)
+            if (matchesRequired < 1) throw new ArgumentOutOfRangeException("matches required", "must be >=1");
+            if (results.Count() <= Math.Max(2, matchesRequired))
             {
                 return new LoopResult { LoopDetected = false };
             }
             var resultArray = results.ToArray();
             var endIndex = resultArray.Length - 1;
-            var last = resultArray[endIndex];
-            int startIndex = Math.Max(-1, startPosition - 1);
+            int startIndex = -1;
             // work from the end to make sure the loop has "kicked in" past any initial non-loop
-            for (int i = resultArray.Length - 2; i >= 0; i--)
+            for (int i = matchesRequired; i < resultArray.Length; i++)
             {
-                if (resultArray[i].Equals(last))
+                bool match = true;
+                for (int j = 0; j < matchesRequired; j++)
+                {
+                    if (!resultArray[i+j].Equals(resultArray[j]))
+                    {
+                        match = false;
+                        break;
+                    }
+                }
+                if (match)
                 {
                     startIndex = i;
                     break;
@@ -298,20 +307,10 @@ namespace Runner
             }
             var loopLength = endIndex - startIndex;
 
-
-            // now wind back to find the earliest loop
-            while (startIndex > startPosition)
-            {
-                if (!resultArray[startIndex - 1].Equals(resultArray[startIndex - 1 + loopLength]))
-                {
-                    break;
-                }
-                startIndex--;
-            }
             return new LoopResult
                     {
                         LoopDetected = true,
-                        StartIndex = startIndex,
+                        StartIndex = startIndex- matchesRequired + 1,
                         LoopLength = loopLength
                     };
 
