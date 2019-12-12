@@ -272,6 +272,63 @@ namespace Runner
             LogLine("repeatVal={0},start={1},length={2},target={3},targetIndex={4},prediction={5}", last, startIndex, cycleLength, targetIteration, targetIndex, prediction);
             return true;
         }
+
+        public LoopResult DetectLoop<T>(IEnumerable<T> results, int startPosition = 0)
+        {
+            if (results.Count() <= 2)
+            {
+                return new LoopResult { LoopDetected = false };
+            }
+            var resultArray = results.ToArray();
+            var endIndex = resultArray.Length - 1;
+            var last = resultArray[endIndex];
+            int startIndex = Math.Max(-1, startPosition - 1);
+            // work from the end to make sure the loop has "kicked in" past any initial non-loop
+            for (int i = resultArray.Length - 2; i >= 0; i--)
+            {
+                if (resultArray[i].Equals(last))
+                {
+                    startIndex = i;
+                    break;
+                }
+            }
+            if (startIndex < 0)
+            {
+                return new LoopResult { LoopDetected = false };
+            }
+            var loopLength = endIndex - startIndex;
+
+
+            // now wind back to find the earliest loop
+            while (startIndex > startPosition)
+            {
+                if (!resultArray[startIndex - 1].Equals(resultArray[startIndex - 1 + loopLength]))
+                {
+                    break;
+                }
+                startIndex--;
+            }
+            return new LoopResult
+                    {
+                        LoopDetected = true,
+                        StartIndex = startIndex,
+                        LoopLength = loopLength
+                    };
+
+        }
+    }
+
+    public struct LoopResult
+    {
+        public bool LoopDetected;
+        public long StartIndex;
+        public long LoopLength;
+
+        public override string ToString()
+        {
+            if (!LoopDetected) return "No loop";
+            return string.Format("Loop starting at {0} of {1}", StartIndex, LoopLength);
+        }
     }
 
     public static class DayUtils
@@ -290,6 +347,7 @@ namespace Runner
 
         public static string[] GetLines(this string input, string removeChars = null)
         {
+            if (input == removeChars) throw new InvalidOperationException("input == removeChars, you really didn't mean that!");
             if (removeChars != null)
             {
                 foreach (var c in removeChars)
