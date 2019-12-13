@@ -41,6 +41,7 @@
     <None Remove="Inputs\Day11SecondTests.txt" />
     <None Remove="Inputs\Day12First.txt" />
     <None Remove="Inputs\Day12FirstTests.txt" />
+    <None Remove="Inputs\Day12Second.txt" />
     <None Remove="Inputs\Day12SecondTests.txt" />
     <None Remove="Inputs\Day13First.txt" />
     <None Remove="Inputs\Day13FirstTests.txt" />
@@ -181,6 +182,9 @@
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Inputs\Day11SecondTests.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
+    <Content Include="Inputs\Day12Second.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
     <Content Include="Inputs\Day12First.txt">

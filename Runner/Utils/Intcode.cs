@@ -19,6 +19,7 @@ namespace Runner
         public Dictionary<long, long> ExtendedRam = new Dictionary<long, long>();
         public long RelativeBase = 0;
         public bool AwaitingInput = false;
+        public bool Debug = false;
 
         private const int MAXPARAMS = 3;
 
@@ -79,10 +80,13 @@ namespace Runner
             while (true)
             {
                 var instructionBlock = GetInstructionBlock(Data, Ptr);
-                Day.Log(Ptr);
-                Day.Log(":");
-                Day.LogLine(instructionBlock);
-                Day.LogLine(Data);
+                if (Debug)
+                {
+                    Day.Log(Ptr);
+                    Day.Log(":");
+                    Day.LogLine(instructionBlock);
+                    Day.LogLine(Data);
+                }
                 Data = instructionBlock.OpDef.Function(this, Data, instructionBlock.Parameters);
                 if (instructionBlock.OpDef.AutoUpdatePtr) Ptr += instructionBlock.OpDef.NumParams + 1;
                 if (Ptr >= Data.Length) throw new IndexOutOfRangeException("ptr past end of Data");
@@ -90,37 +94,6 @@ namespace Runner
             }
             return Data;
         }
-
-        //public void EnqueueInput(long input)
-        //{
-        //    InputQueue.Enqueue(input);
-        //}
-
-        //public long DequeueOutput()
-        //{
-        //    return OutputQueue.Dequeue();
-        //}
-
-        //public long[] Execute(long[] data)
-        //{
-        //    if (Noun.HasValue) data[1] = Noun.Value;
-        //    if (Verb.HasValue) data[2] = Verb.Value;
-        //    this.Data = data;
-        //    Ptr = 0;
-        //    while (true)
-        //    {
-        //        var instructionBlock = GetInstructionBlock(data, Ptr);
-        //        Day.Log(Ptr);
-        //        Day.Log(":");
-        //        Day.LogLine(instructionBlock);
-        //        Day.LogLine(data);
-        //        data = instructionBlock.OpDef.Function(this, data, instructionBlock.Parameters);
-        //        if (instructionBlock.OpDef.AutoUpdatePtr) Ptr += instructionBlock.OpDef.NumParams + 1;
-        //        if (Ptr >= data.Length) throw new IndexOutOfRangeException("ptr past end of data");
-        //        if (this.Halt) break;
-        //    }
-        //    return data;
-        //}
 
         private static InstructionBlock GetInstructionBlock(long[] data, long ptr)
         {
