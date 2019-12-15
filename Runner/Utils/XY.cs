@@ -83,6 +83,11 @@ namespace Runner
             }
         }
 
+        public static IEnumerable<Direction> GetAllDirections()
+        {
+            return DirToChar.Keys;
+        }
+
         public IEnumerable<XY> GetSurroundingCoords()
         {
             var xys = new List<XY>();
