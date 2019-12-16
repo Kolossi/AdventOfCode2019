@@ -21,7 +21,14 @@ namespace Runner
     public class MapWalkState<NodeType>
     {
         public Map<NodeType> Map;
+        public Direction Direction;
         public XY Position;
+    }
+
+    public class MapPathState<NodeType>
+    {
+        public Map<NodeType> Map;
+        public Path Path;
     }
 
     public class MoveAttempt
@@ -30,7 +37,7 @@ namespace Runner
         public Direction Direction;
     }
 
-    public class MapDetailResponse<NodeType>
+    public class MapMoveResponse<NodeType>
     {
         public NodeType Value;
         public bool CanMove;
@@ -40,46 +47,62 @@ namespace Runner
     {
         // example of usage:
         //  2019 day 15
-        public static MapWalkState<NodeType> WalkMap(
-            XY startPosition,
-            Func<MapWalkState<NodeType>,IEnumerable<Direction>> getNextDirections,
-            Func<MapWalkState<NodeType>, Direction, MapDetailResponse<NodeType>> getMapDetail,
+
+       public static MapWalkState<NodeType> WalkMap(
+            MapWalkState<NodeType> mapState,
+            Func<MapWalkState<NodeType>,Direction> getNextDirection,
+            Func<MapWalkState<NodeType>, MapMoveResponse<NodeType>> getMoveResult,
             Func<MapWalkState<NodeType>,bool> isComplete)
         {
-            var mapState = new MapWalkState<NodeType>()
+            mapState.Direction = getNextDirection(mapState);
+            while (!isComplete(mapState))
             {
-                Position = new XY(startPosition),
-                Map = new Map<NodeType>()
-            };
-            var moveAttemptQueue = new Queue<MoveAttempt>(getNextDirections(mapState)
-                .Select(d=>new MoveAttempt()
+                var mapDetail = getMoveResult(mapState);
+                var newPosition = mapState.Position.Move(mapState.Direction);
+                mapState.Map.Set(newPosition, mapDetail.Value);
+                if (mapDetail.CanMove)
                 {
-                    Position = startPosition,
-                    Direction = d 
-                }));
-            while (moveAttemptQueue.Any() && !isComplete(mapState))
-            {
-                var moveAttempt = moveAttemptQueue.Dequeue();
-                mapState.Position = moveAttempt.Position;
-                var mapDetail = getMapDetail(mapState, moveAttempt.Direction);
-                mapState.Map.Set(mapState.Position, mapDetail.Value);
-                if (!mapDetail.CanMove) continue;
-                foreach (var nextDirection in getNextDirections(mapState))
-                {
-                    moveAttemptQueue.Enqueue(new MoveAttempt()
-                    {
-                        Position = mapState.Position,
-                        Direction = nextDirection
-                    });
+                    mapState.Position = newPosition;
                 }
+                mapState.Direction = getNextDirection(mapState);
             }
 
             return mapState;
         }
-
-        internal static object MapWalkState(XY xY, object getNextDroidDirections, object getDroidMapDetail, object foundOxygen)
+     
+        public static Path FindSingleShortestPath<NodeType>(
+            XY startPosition,
+            Map<NodeType> map,
+            Func<MapPathState<NodeType>, IEnumerable<XY>> getNextNodes,
+            Func<MapPathState<NodeType>, long> scorePathLength,
+            Func<MapPathState<NodeType>, bool> haveFoundEnd)
         {
-            throw new NotImplementedException();
+            var distanceMap = new Map<long>();
+            var path = new Path();
+            Path shortestPath = null;
+            long shortestPathLengthScore = long.MaxValue;
+            path.Move(startPosition);
+            var toProcess = new Queue<Path>();
+            toProcess.Enqueue(path);
+            while (toProcess.Any())
+            {
+                path = toProcess.Dequeue();
+                MapPathState<NodeType> mapPathState = new MapPathState<NodeType>() { Map = map, Path = path };
+                var pathLengthScore = scorePathLength(mapPathState);
+                if (pathLengthScore >= shortestPathLengthScore) continue;
+                if (haveFoundEnd(mapPathState))
+                {
+                    shortestPath = mapPathState.Path;
+                    shortestPathLengthScore = pathLengthScore;
+                    continue;
+                }
+                foreach (var newXY in getNextNodes(mapPathState))
+                {
+                    if (path.Visited.Has(newXY)) continue;
+                }
+            }
+
+            return shortestPath;
         }
 
         // example of usage:

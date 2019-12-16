@@ -102,6 +102,11 @@ namespace Runner
             return xys;
         }
 
+        public IEnumerable<XY> GetAdjacentCoords()
+        {
+            return GetAllDirections().Select(d => Move(d));
+        }
+
         public int GetManhattanDistanceTo(XY other)
         {
             return Math.Abs(X - other.X) + Math.Abs(Y - other.Y);

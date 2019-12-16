@@ -10,11 +10,13 @@ namespace Runner
         public override string First(string input)
         {
             var data = input.GetParts(",").Select(p => long.Parse(p)).ToArray();
-            var intcode = new Intcode(data);
-            var map = GetMap(intcode);
-            return "x";
+            var robot = new Robot(data);
+            var map = robot.GetMap();
+            LogLine(map.GetStateString(SHIP_VALUE_MAP));
+            LogLine("Got map, looking for shortest path");
+            var shortestPath = RouteSolver<ShipMap>.FindSingleShortestPath(new XY(0, 0), map, GetNextNodes, ScorePathLength, HaveFoundEnd);
+            return shortestPath.Length.ToString();
         }
-
 
         public override string Second(string input)
         {
@@ -33,7 +35,7 @@ namespace Runner
 
         ////////////////////////////////////////////////////////
 
-        private Dictionary<long, Direction> RobotToMapDirection = new Dictionary<long, Direction>()
+        public static Dictionary<long, Direction> RobotToMapDirection = new Dictionary<long, Direction>()
         {
             { 1, Direction.North },
             { 2, Direction.South },
@@ -41,7 +43,7 @@ namespace Runner
             { 4, Direction.East }
         };
 
-        private Dictionary<Direction, long> MapToRobotDirection = new Dictionary<Direction, long>()
+        public static Dictionary<Direction, long> MapToRobotDirection = new Dictionary<Direction, long>()
         {
             { Direction.North, 1 },
             { Direction.South, 2 },
@@ -57,7 +59,7 @@ namespace Runner
             Oxygen = 3
         }
 
-        public Dictionary<ShipMap, char> SHIP_VALUE_MAP = new Dictionary<ShipMap, char>()
+        public static Dictionary<ShipMap, char> SHIP_VALUE_MAP = new Dictionary<ShipMap, char>()
         {
             {ShipMap.Unexplored, ' ' },
             {ShipMap.Free, '.' },
@@ -65,34 +67,127 @@ namespace Runner
             {ShipMap.Oxygen, 'O' }
         };
 
-        //        public static MapWalkState<NodeType> WalkMap(
-            //XY startPosition,
-            //Func<MapWalkState<NodeType>,IEnumerable<Direction>> getNextDirections,
-            //Func<MapWalkState<NodeType>, Direction, MapDetailResponse<NodeType>> getMapDetail,
-            //Func<MapWalkState<NodeType>,bool> isComplete)
-        {
 
-        private IEnumerable<Direction> GetNextDirections(MapWalkState<ShipMap> mapWalkState)
+        public class Robot
         {
-            return XY.GetAllDirections().Where(d => !mapWalkState.Map.Has(mapWalkState.Position.Move(d)));
+            public long[] Data;
+            public Intcode Intcode;
+            public Random rnd = new Random();
+            public int MapTick = 0;
+            public static int MAXTICK = int.MaxValue;
+
+            public Robot(long[] data)
+            {
+                Data = data;
+                Intcode = new Intcode(data);
+            }
+
+            private bool IsComplete(MapWalkState<ShipMap> mapWalkState)
+            {
+                if (MapTick++ > MAXTICK)
+                {
+                    MapTick = 0;
+                    LogLine("{0} {1}", mapWalkState.Position, mapWalkState.Direction);
+                    LogLine("map count: {0}", mapWalkState.Map.Count);
+                    LogLine(mapWalkState.Map.GetStateString(SHIP_VALUE_MAP, mapWalkState.Position, mapWalkState.Direction));
+                }
+                return (mapWalkState.Map.TryGetValue(mapWalkState.Position, out ShipMap value) && value == ShipMap.Oxygen);
+            }
+
+            private MapMoveResponse<ShipMap> GetMoveResult(MapWalkState<ShipMap> mapWalkState)
+            {
+                var robotDir = MapToRobotDirection[mapWalkState.Direction];
+                Intcode.InputQueue.Enqueue((long)robotDir);
+                Intcode.Resume();
+                var resultValue = Intcode.OutputQueue.Dequeue();
+                if (resultValue == 0) return new MapMoveResponse<ShipMap>() { Value = ShipMap.Wall, CanMove = false };
+                else if (resultValue == 1) return new MapMoveResponse<ShipMap>() { Value = ShipMap.Free, CanMove = true };
+                else if (resultValue == 2) return new MapMoveResponse<ShipMap>() { Value = ShipMap.Oxygen, CanMove = true };
+                throw new ArgumentOutOfRangeException("result");
+            }
+
+            private Direction GetNextDirectionRightDominant(MapWalkState<ShipMap> mapWalkState)
+            {
+                return GetNextDirection(mapWalkState, leftDominant:false);
+            }
+
+
+            private Direction GetNextDirectionLeftDominant(MapWalkState<ShipMap> mapWalkState)
+            {
+                return GetNextDirection(mapWalkState, leftDominant:true);
+            }
+
+            private Direction GetNextDirection(MapWalkState<ShipMap> mapWalkState, bool leftDominant=false)
+            {
+                Direction[] directionsToTry = new Direction[]
+                                            {
+                                                mapWalkState.Direction,
+                                                leftDominant? mapWalkState.Direction.TurnLeft() : mapWalkState.Direction.TurnRight(),
+                                                leftDominant? mapWalkState.Direction.TurnRight() : mapWalkState.Direction.TurnLeft(),
+                                                mapWalkState.Direction.TurnRight().TurnRight()
+                                            };
+
+                foreach (var direction in directionsToTry)
+                {
+                    if (!mapWalkState.Map.Has(mapWalkState.Position.Move(direction))) return direction;
+                }
+
+                // swap straight/dominant turn to get out of standard walkright/left maze trap:
+                // #######
+                // #.....#
+                // #.#.#.#
+                // ###.###
+                if (rnd.Next(100)>50) 
+                {
+                    var temp = directionsToTry[0];
+                    directionsToTry[0] = directionsToTry[1];
+                    directionsToTry[1] = temp;
+                }
+
+                foreach (var direction in directionsToTry)
+                {
+
+                    if (mapWalkState.Map.TryGetValue(mapWalkState.Position.Move(direction), out ShipMap value) && value != ShipMap.Wall) return direction;
+                }
+
+                throw new InvalidOperationException();
+            }
+
+            public Map<ShipMap> GetMap()
+            {
+                var mapState = new MapWalkState<ShipMap>()
+                {
+                    Position = new XY(0, 0),
+                    Direction = Direction.North,
+                    Map = new Map<ShipMap>()
+                };
+
+                mapState = RouteSolver<ShipMap>.WalkMap(mapState, GetNextDirectionRightDominant, GetMoveResult, IsComplete);
+                mapState.Position = new XY(0, 0);
+                Intcode = new Intcode(Data);
+                mapState = RouteSolver<ShipMap>.WalkMap(mapState, GetNextDirectionLeftDominant, GetMoveResult, IsComplete);
+                mapState.Position = new XY(0, 0);
+                Intcode = new Intcode(Data);
+
+                return mapState.Map;
+            }
         }
 
-        private bool IsComplete(MapWalkState<ShipMap> mapWalkState)
+        private IEnumerable<XY> GetNextNodes(MapPathState<ShipMap> mapPathState)
         {
-            return mapWalkState.Map.GetAllValues().Any(v => v == ShipMap.Oxygen);
+            return mapPathState.Path.XY.GetAdjacentCoords()
+                .Where(p => mapPathState.Map.TryGetValue(p, out ShipMap val) && (val == ShipMap.Free || val == ShipMap.Oxygen));
         }
 
-        private MapDetailResponse<ShipMap> GetMapDetail(MapWalkState<ShipMap> mapWalkState, Direction direction)
+        private long ScorePathLength(MapPathState<ShipMap> mapPathState)
         {
-            // TODO: get droid to mapWalkState.Pos:
-            RouteSolver<ShipMap>.FindSingleMapRoute(mapWalkState.Map, currentPos, mapWalkState.Pos)
-            //  then run intcode with direction (mapped to droid direction) as input
-            // then go back to previous position
+            return mapPathState.Path.Length;
         }
 
-        private Map<ShipMap> GetMap(Intcode intcode)
+        private bool HaveFoundEnd(MapPathState<ShipMap> mapPathState)
         {
-            var mapState = RouteSolver<ShipMap>.MapWalkState(new XY(0,0), GetNextDirections, GetMapDetail, IsComplete)
+            return (mapPathState.Map.TryGetValue(mapPathState.Path.XY, out ShipMap val) && val == ShipMap.Oxygen);
         }
+
     }
 }

@@ -159,9 +159,10 @@ namespace Runner
             yDict[x] = value;
         }
 
-        public string GetStateString(Dictionary<T, char> valueMap)
+        public string GetStateString(Dictionary<T, char> valueMap, XY pointerPos = null, Direction? pointerDirection = null)
         {
             var sb = new StringBuilder();
+            if (this.Count == 0) return "-MAP EMPTY-";
             var minPos = GetMinPos();
             var maxPos = GetMaxPos();
             sb.AppendFormat("{0}->{1}", minPos, maxPos).AppendLine();
@@ -169,6 +170,11 @@ namespace Runner
             {
                 for (int x = minPos.X; x <= maxPos.X; x++)
                 {
+                    if (pointerDirection.HasValue && pointerPos.X==x && pointerPos.Y==y)
+                    {
+                        sb.Append(XY.DirToChar[pointerDirection.Value]);
+                        continue;
+                    }
                     T value;
                     TryGetValue(x, y, out value);
                     sb.Append(valueMap[value]);
