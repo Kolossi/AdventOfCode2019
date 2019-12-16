@@ -7,20 +7,52 @@ namespace Runner
 {
     class Day15 :  Day
     {
+        private static Map<ShipMap> Map;
         public override string First(string input)
         {
             var data = input.GetParts(",").Select(p => long.Parse(p)).ToArray();
             var robot = new Robot(data);
-            var map = robot.GetMap();
-            LogLine(map.GetStateString(SHIP_VALUE_MAP));
+            Map = robot.GetMap();
+            LogLine(Map.GetStateString(SHIP_VALUE_MAP));
             LogLine("Got map, looking for shortest path");
-            var shortestPath = RouteSolver<ShipMap>.FindSingleShortestPath(new XY(0, 0), map, GetNextNodes, ScorePathLength, HaveFoundEnd);
+            var shortestPath = RouteSolver<ShipMap>.FindSingleShortestPath(new XY(0, 0), Map, GetNextNodes, ScorePathLength, HaveFoundEnd);
             return shortestPath.Length.ToString();
         }
 
         public override string Second(string input)
         {
-            throw new NotImplementedException("Second");
+            // 447 too high
+            if (Map == null)
+            {
+                var data = input.GetParts(",").Select(p => long.Parse(p)).ToArray();
+                var robot = new Robot(data);
+                Map = robot.GetMap();
+            }
+            var oxygenTime = FindOxygenFillTime(Map);
+            return oxygenTime.ToString();
+        }
+
+        private long FindOxygenFillTime(Map<ShipMap> map)
+        {
+            long oxygenTime = 0;
+            var newOxygens = new HashSet<XY>(map.GetAllCoords().Where(c => map.Get(c) == ShipMap.Oxygen));
+            while (newOxygens.Any())
+            {
+                var oxygensToDiffuse = newOxygens;
+                newOxygens = new HashSet<XY>();
+                foreach (var oxygen in oxygensToDiffuse)
+                {
+                    foreach (var newOxygen in oxygen.GetAdjacentCoords().Where(p=>map.Get(p)==ShipMap.Free))
+                    {
+                        newOxygens.Add(newOxygen);
+                    }
+                }
+
+                foreach (var newOxygen in newOxygens) map.Set(newOxygen, ShipMap.Oxygen);
+                oxygenTime++;
+            }
+            oxygenTime--;
+            return oxygenTime;
         }
 
         public override string FirstTest(string input)
@@ -106,24 +138,13 @@ namespace Runner
                 throw new ArgumentOutOfRangeException("result");
             }
 
-            private Direction GetNextDirectionRightDominant(MapWalkState<ShipMap> mapWalkState)
-            {
-                return GetNextDirection(mapWalkState, leftDominant:false);
-            }
-
-
-            private Direction GetNextDirectionLeftDominant(MapWalkState<ShipMap> mapWalkState)
-            {
-                return GetNextDirection(mapWalkState, leftDominant:true);
-            }
-
-            private Direction GetNextDirection(MapWalkState<ShipMap> mapWalkState, bool leftDominant=false)
+            private Direction GetNextDirection(MapWalkState<ShipMap> mapWalkState)
             {
                 Direction[] directionsToTry = new Direction[]
                                             {
                                                 mapWalkState.Direction,
-                                                leftDominant? mapWalkState.Direction.TurnLeft() : mapWalkState.Direction.TurnRight(),
-                                                leftDominant? mapWalkState.Direction.TurnRight() : mapWalkState.Direction.TurnLeft(),
+                                                mapWalkState.Direction.TurnRight(),
+                                                mapWalkState.Direction.TurnLeft(),
                                                 mapWalkState.Direction.TurnRight().TurnRight()
                                             };
 
@@ -162,12 +183,11 @@ namespace Runner
                     Map = new Map<ShipMap>()
                 };
 
-                mapState = RouteSolver<ShipMap>.WalkMap(mapState, GetNextDirectionRightDominant, GetMoveResult, IsComplete);
+                mapState = RouteSolver<ShipMap>.WalkMap(mapState, GetNextDirection, GetMoveResult, IsComplete);
+                // go again, to fill in blanks
                 mapState.Position = new XY(0, 0);
                 Intcode = new Intcode(Data);
-                mapState = RouteSolver<ShipMap>.WalkMap(mapState, GetNextDirectionLeftDominant, GetMoveResult, IsComplete);
-                mapState.Position = new XY(0, 0);
-                Intcode = new Intcode(Data);
+                mapState = RouteSolver<ShipMap>.WalkMap(mapState, GetNextDirection, GetMoveResult, IsComplete);
 
                 return mapState.Map;
             }

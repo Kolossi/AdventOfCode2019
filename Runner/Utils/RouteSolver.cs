@@ -99,6 +99,7 @@ namespace Runner
                 foreach (var newXY in getNextNodes(mapPathState))
                 {
                     if (path.Visited.Has(newXY)) continue;
+                    toProcess.Enqueue(new Path(path).Move(newXY));
                 }
             }
 
