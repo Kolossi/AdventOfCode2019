@@ -5,13 +5,14 @@ using System.Linq;
 
 namespace Runner
 {
-    class Day16 :  Day
+    class Day16 : Day
     {
         public override string First(string input)
         {
             var parts = input.GetParts(",");
             var phaseCount = int.Parse(parts[0]);
             var fftInput = parts[1].ToCharArray().Select(c => long.Parse(c.ToString()));
+            //var result = NaiveOperateFftPhases(fftInput, phaseCount);
             var result = OperateFftPhases(fftInput, phaseCount);
             return result;
         }
@@ -21,6 +22,7 @@ namespace Runner
             //spot zeros and skip inputs completely
             // spot repeats and just sum x elements
             // etc to optimise
+            throw new NotImplementedException("Second");
         }
 
         //public override string FirstTest(string input)
@@ -35,7 +37,7 @@ namespace Runner
 
         ////////////////////////////////////////////////////////
 
-        private string OperateFftPhases(IEnumerable<long> fftInput, int phaseCount)
+        private string NaiveOperateFftPhases(IEnumerable<long> fftInput, int phaseCount)
         {
             var fftBasePattern = new LinkedList<long>(new long[] { 0, 1, 0, -1 });
             Queue<long> inputQueue = null;
@@ -68,5 +70,52 @@ namespace Runner
             return string.Join("", fftInput.Take(8));
         }
 
+        private string OperateFftPhases(IEnumerable<long> fftInput, int phaseCount)
+        {
+            //var fftBasePattern = new LinkedList<long>(new long[] { 0, 1, 0, -1 });
+            for (int phase = 0; phase < phaseCount; phase++)
+            {
+                var fftInputLL = new LinkedList<long>(fftInput);
+                var output = new List<long>();
+                for (long outputDigitPos = 1; outputDigitPos <= fftInput.Count(); outputDigitPos++)
+                {
+                   var fftNode = fftInputLL.First;
+                    var firstSkip = outputDigitPos - 1;
+                    long stateChangeCount = firstSkip;
+                    bool skip = true;
+                    bool subtract = false;
+                    long sum = 0;
+                    for (int inputDigitPos = 0; inputDigitPos < fftInput.Count(); inputDigitPos++)
+                    {
+                        if (!skip)
+                        {
+                            var value = fftNode.Value;
+                            sum += subtract ? -value : value;
+                        }
+                        fftNode = fftNode.Next;
+                        stateChangeCount--;
+                        if (stateChangeCount == 0)
+                        {
+                            stateChangeCount = outputDigitPos;
+                            if (skip)
+                            {
+                                skip = false;
+                            }
+                            else
+                            {
+                                subtract = !subtract;
+                                skip = true;
+                            }
+                        }
+                    }
+                    output.Add(Math.Abs(sum) % 10);
+
+
+                }
+                fftInput = output;
+
+            }
+            return string.Join("", fftInput.Take(8));
+        }
     }
 }

@@ -70,12 +70,25 @@ namespace Runner
             return mapState;
         }
      
-        public static Path FindSingleShortestPath<NodeType>(
+        // example of usage:
+        //  2019 day 15
+        //  2019 day 17
+
+        public static Path FindSingleShortestPath(
             XY startPosition,
             Map<NodeType> map,
             Func<MapPathState<NodeType>, IEnumerable<XY>> getNextNodes,
-            Func<MapPathState<NodeType>, long> scorePathLength,
             Func<MapPathState<NodeType>, bool> haveFoundEnd)
+        {
+            return FindSingleShortestPath(startPosition, map, getNextNodes, haveFoundEnd, RouteSolver<NodeType>.ScorePathLength);
+        }
+
+        public static Path FindSingleShortestPath(
+            XY startPosition,
+            Map<NodeType> map,
+            Func<MapPathState<NodeType>, IEnumerable<XY>> getNextNodes,
+            Func<MapPathState<NodeType>, bool> haveFoundEnd,
+            Func<MapPathState<NodeType>, long> scorePathLength)
         {
             var distanceMap = new Map<long>();
             var path = new Path();
@@ -146,5 +159,11 @@ namespace Runner
             }
             return new RouteResult<NodeType> { Found = false };
         }
+
+        public static long ScorePathLength(MapPathState<NodeType> mapPathState)
+        {
+            return mapPathState.Path.Length;
+        }
+
     }
 }

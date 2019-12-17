@@ -15,7 +15,7 @@ namespace Runner
             Map = robot.GetMap();
             LogLine(Map.GetStateString(SHIP_VALUE_MAP));
             LogLine("Got map, looking for shortest path");
-            var shortestPath = RouteSolver<ShipMap>.FindSingleShortestPath(new XY(0, 0), Map, GetNextNodes, ScorePathLength, HaveFoundEnd);
+            var shortestPath = RouteSolver<ShipMap>.FindSingleShortestPath(new XY(0, 0), Map, GetNextNodes, HaveFoundEnd);
             return shortestPath.Length.ToString();
         }
 
@@ -197,11 +197,6 @@ namespace Runner
         {
             return mapPathState.Path.XY.GetAdjacentCoords()
                 .Where(p => mapPathState.Map.TryGetValue(p, out ShipMap val) && (val == ShipMap.Free || val == ShipMap.Oxygen));
-        }
-
-        private long ScorePathLength(MapPathState<ShipMap> mapPathState)
-        {
-            return mapPathState.Path.Length;
         }
 
         private bool HaveFoundEnd(MapPathState<ShipMap> mapPathState)
