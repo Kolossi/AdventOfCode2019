@@ -82,7 +82,7 @@ namespace Runner
                    var fftNode = fftInputLL.First;
                     var firstSkip = outputDigitPos - 1;
                     long stateChangeCount = firstSkip;
-                    bool skip = true;
+                    bool skip = firstSkip == 0 ? false : true;
                     bool subtract = false;
                     long sum = 0;
                     for (int inputDigitPos = 0; inputDigitPos < fftInput.Count(); inputDigitPos++)
@@ -94,7 +94,7 @@ namespace Runner
                         }
                         fftNode = fftNode.Next;
                         stateChangeCount--;
-                        if (stateChangeCount == 0)
+                        if (stateChangeCount <= 0)
                         {
                             stateChangeCount = outputDigitPos;
                             if (skip)
