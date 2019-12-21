@@ -7,12 +7,14 @@ namespace Runner
 {
     class Day17 :  Day
     {
+        public Map<ScafMap> Map;
+
         public override string First(string input)
         {
             long[] data = input.GetParts(",").Select(p => long.Parse(p)).ToArray();
-            var map = GetMap(data);
-            LogLine(map.GetStateString(SCAF_VALUE_MAP));
-            return GetCalibrationCode(map).ToString();
+            Map = GetMap(data);
+            LogLine(Map.GetStateString(SCAF_VALUE_MAP));
+            return GetCalibrationCode(Map).ToString();
         }
 
         public override string Second(string input)

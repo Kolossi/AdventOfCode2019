@@ -315,8 +315,4 @@
     </Content>
   </ItemGroup>
 
-  <ItemGroup>
-    <PackageReference Include="OneOf" Version="2.1.108" />
-  </ItemGroup>
-
 </Project>

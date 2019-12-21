@@ -113,7 +113,11 @@ namespace Runner
                 }
                 lines = testLines.ToArray();
             }
-
+            if (lines[0]=="SKIP")
+            {
+                Console.WriteLine("      TEST INPUT STARTS WITH SKIP");
+                return false;
+            }
             foreach (var line in lines)
             {
 
@@ -212,8 +216,11 @@ namespace Runner
         public static void LogLine(string format, params object[] args)
         {
 #if DEBUG
-            args = ConvertEnumerableArgsToCSVString(args);
-            if (LogEnabled) Console.WriteLine(string.Format(format, args));
+            if (LogEnabled)
+            {
+                args = ConvertEnumerableArgsToCSVString(args);
+                Console.WriteLine(string.Format(format, args));
+            }
 #endif
         }
 
