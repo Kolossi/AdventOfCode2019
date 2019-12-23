@@ -14,7 +14,7 @@ namespace Runner
         public long? Noun;
         public long? Verb;
         public bool Halt = false;
-        public long Ptr;
+        public long Ptr = 0;
         public long[] Data;
         public Dictionary<long, long> ExtendedRam = new Dictionary<long, long>();
         public long RelativeBase = 0;

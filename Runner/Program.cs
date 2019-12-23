@@ -26,12 +26,12 @@ namespace Runner
                 //new Day15(),
                 //new Day16(), // todo part 2 fft
                 //new Day17(), // todo part 2 scaffold logo
-                new Day18(), // todo part 1 and 2 doors and keys
+                //new Day18(), // todo part 2 doors and keys
                 //new Day19(),
-                //new Day20(),
-                //new Day21(),
-                //new Day22(),
-                //new Day23(),
+                //new Day20(), // todo part 2 donut maze
+                //new Day21(), // todo part 2 spring script
+                //new Day22(), // todo part 2 modulo number theory
+                new Day23(),
                 //new Day24(),
                 //new Day25()
             };
