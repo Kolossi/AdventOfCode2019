@@ -83,9 +83,11 @@ namespace Runner
             XY startPosition,
             Map<NodeType> map,
             Func<MapPathState<NodeType>, IEnumerable<XY>> getNextNodes,
-            Func<MapPathState<NodeType>, bool> haveFoundEnd)
+            Func<MapPathState<NodeType>, bool> haveFoundEnd,
+            bool routeRevisitsAllowed = false
+            )
         {
-            return FindSingleShortestPath(startPosition, map, getNextNodes, haveFoundEnd, RouteSolver<NodeType>.ScorePathLength);
+            return FindSingleShortestPath(startPosition, map, getNextNodes, haveFoundEnd, RouteSolver<NodeType>.ScorePathLength, routeRevisitsAllowed);
         }
 
         public static Path FindSingleShortestPath(
@@ -93,7 +95,8 @@ namespace Runner
             Map<NodeType> map,
             Func<MapPathState<NodeType>, IEnumerable<XY>> getNextNodes,
             Func<MapPathState<NodeType>, bool> haveFoundEnd,
-            Func<MapPathState<NodeType>, long> scorePath)
+            Func<MapPathState<NodeType>, long> scorePath,
+            bool routeRevisitsAllowed = false)
         {
             var distanceMap = new Map<long>();
             var originalPath = new Path();
@@ -114,7 +117,7 @@ namespace Runner
                 {
                     distanceMap.Set(mapPathState.Path.XY, pathLengthScore);
                 }
-                else if (pathLengthScore >= bestDistanceToHere)
+                else if (pathLengthScore >= bestDistanceToHere && !routeRevisitsAllowed)
                 {
                     continue;
                 }
@@ -125,9 +128,11 @@ namespace Runner
                     shortestPathLengthScore = pathLengthScore;
                     continue;
                 }
-                foreach (var newXY in getNextNodes(mapPathState))
+
+                IEnumerable<XY> nextNodes = getNextNodes(mapPathState);
+                foreach (var newXY in nextNodes)
                 {
-                    if (originalPath.Visited.Has(newXY)) continue;
+                    if (originalPath.Visited.Has(newXY) && !routeRevisitsAllowed) continue;
                     toProcess.Enqueue(new MapPathState<NodeType>()
                     {
                         Path = new Path(mapPathState.Path).Move(newXY),

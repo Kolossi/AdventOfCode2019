@@ -13,13 +13,22 @@ namespace Runner
         {
             long[] data = input.GetParts(",").Select(p => long.Parse(p)).ToArray();
             Map = GetMap(data);
+            LogEnabled = true;
             LogLine(Map.GetStateString(SCAF_VALUE_MAP));
             return GetCalibrationCode(Map).ToString();
         }
 
         public override string Second(string input)
         {
-            throw new NotImplementedException("Second");
+//            L,10,R,12,R,12,R,6,R,10,L,10,L,10,R,12,R,12,R,10,L,10,L,12,R,6,R,6,R,10,L,10,R,10,L,10,L,12,R,6,R,6,R,10,L,10,R,10,L,10,L,12,R,6,L,10,R,12,R,12,R,10,L,10,L,12,R,6
+//{ A},R,6,R,10,L,10,{ A},R,10,L,10,L,12,R,6,R,6,R,10,L,10,R,10,L,10,L,12,R,6,R,6,R,10,L,10,R,10,L,10,L,12,R,6,{ A},R,10,L,10,L,12,R,6
+
+//A = L,10,R,12,R,12
+
+//L,10,R,12,R,12,R,6,{ A},L,10,R,12,R,12,{ A},L,12,R,6,R,6,{ A},{ A},L,12,R,6,R,6,{ A},{ A},L,12,R,6,L,10,R,12,R,12,{ A},L,12,R,6
+//A = R,10,L,10
+            var path = GetPath(Map);
+            return string.Join(",", path.ToLogo());
         }
 
         public override string FirstTest(string input)
@@ -86,18 +95,30 @@ namespace Runner
         public Path GetPath(Map<ScafMap> map)
         {
             var vacuumPos = map.GetAllCoords().Where(c => map.Get(c) == ScafMap.Vacuum).First();
-            var path = RouteSolver<ScafMap>.FindSingleShortestPath(vacuumPos, map, GetNextNodes, HaveFoundEnd);
-            throw new NotImplementedException();    
+            var path = RouteSolver<ScafMap>.FindSingleShortestPath(vacuumPos, map, GetNextNodes, HaveFoundEnd, routeRevisitsAllowed: true);
+            return path;
         }
 
         private bool HaveFoundEnd(MapPathState<ScafMap> mps)
         {
-            throw new NotImplementedException();
+            if (mps.Map.Get(mps.Path.XY) == ScafMap.Vacuum) return false;
+            IEnumerable<XY> adjacentNotSpace = mps.Path.XY.GetAdjacentCoords()
+                .Where(c => mps.Map.TryGetValue(c, out var val) && val != ScafMap.Space);
+            bool result = adjacentNotSpace.Count() == 1;
+            return result;
         }
 
         private IEnumerable<XY> GetNextNodes(MapPathState<ScafMap> mps)
         {
-            throw new NotImplementedException();
+            if (mps.Path.Length == 0) return mps.Path.XY.GetAdjacentCoords().Where(c => mps.Map.Get(c) == ScafMap.Scaffolding);
+            var direction = mps.Path.XY.DirectionFrom(mps.Path.Points.Last.Previous.Value);
+            var nextInDir = mps.Path.XY.Move(direction);
+            if (mps.Map.TryGetValue(nextInDir, out var val) && val == ScafMap.Scaffolding) return new XY[] { nextInDir };
+            var toLeft = mps.Path.XY.Move(direction.TurnLeft());
+            if (mps.Map.TryGetValue(toLeft, out val) && val == ScafMap.Scaffolding) return new XY[] { toLeft };
+            var toRight = mps.Path.XY.Move(direction.TurnRight());
+            if (mps.Map.TryGetValue(toRight, out val) && val == ScafMap.Scaffolding) return new XY[] { toRight };
+            return Enumerable.Empty<XY>();
         }
 
     }

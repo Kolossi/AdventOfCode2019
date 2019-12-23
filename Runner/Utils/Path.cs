@@ -43,6 +43,33 @@ namespace Runner
             return this;
         }
 
+        public List<string> ToLogo(Direction initialDirection=Direction.North)
+        {
+            var result = new List<string>();
+            var firstNode = Points.First;
+            var direction = firstNode.Next.Value.DirectionFrom(firstNode.Value);
+            result.AddRange(initialDirection.GetTurnTo(direction).Split(",", StringSplitOptions.RemoveEmptyEntries));
+            var previous = firstNode.Value;
+            long distance = 0;
+            foreach (var point in Points.Skip(1))
+            {
+                var thisDirection = point.DirectionFrom(previous);
+                previous = point;
+                if (thisDirection==direction)
+                {
+                    distance++;
+                    continue;
+                }
+                result.Add(distance.ToString());
+                result.AddRange(direction.GetTurnTo(thisDirection).Split(",", StringSplitOptions.RemoveEmptyEntries));
+                direction = thisDirection;
+                distance = 1;
+                
+            }
+            result.Add(distance.ToString());
+            return result;
+        }
+
         public override string ToString()
         {
             return string.Format("({0}):{1}", Length, string.Join(",", Points));

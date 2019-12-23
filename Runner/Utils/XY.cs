@@ -66,6 +66,16 @@ namespace Runner
             return new XY(X - 1, Y);
         }
 
+        public Direction DirectionFrom(XY previous)
+        {
+            if (GetManhattanDistanceTo(previous) != 1) throw new InvalidOperationException("Not Adjacent");
+            if (previous.Y == Y + 1) return Direction.North;
+            else if (previous.Y == Y - 1) return Direction.South;
+            else if (previous.X == X - 1) return Direction.East;
+            else if (previous.X == X + 1) return Direction.West;
+            throw new InvalidOperationException("huh?");
+        }
+
         public XY Move(Direction dir)
         {
             switch (dir)
@@ -163,6 +173,14 @@ namespace Runner
         public static Direction TurnLeft(this Direction direction)
         {
             return (Direction)(((int)direction - 1 + 4) % 4);
+        }
+
+        public static string GetTurnTo(this Direction direction, Direction next)
+        {
+            if (direction.TurnRight() == next) return "R";
+            else if (direction.TurnLeft() == next) return "L";
+            else if (direction.TurnRight().TurnRight() == next) return "R,R";
+            return "";
         }
 
     }
