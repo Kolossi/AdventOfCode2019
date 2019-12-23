@@ -29,9 +29,9 @@ namespace Runner
                 //new Day18(), // todo part 2 doors and keys
                 //new Day19(),
                 //new Day20(), // todo part 2 donut maze
-                //new Day21(), // todo part 2 spring script
+                new Day21(), // todo part 2 spring script
                 //new Day22(), // todo part 2 modulo number theory
-                new Day23(),
+                //new Day23(),
                 //new Day24(),
                 //new Day25()
             };
