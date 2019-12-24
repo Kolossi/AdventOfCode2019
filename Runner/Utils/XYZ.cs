@@ -15,6 +15,13 @@ namespace Runner
         {
         }
 
+        public XYZ(long x, long y, long z)
+        {
+            X = x;
+            Y = y;
+            Z = z;
+        }
+
         public XYZ(XYZ right)
         {
             X = right.X;
