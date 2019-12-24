@@ -20,16 +20,34 @@ namespace Runner
 
         public override string Second(string input)
         {
+//            solved by human(TM) - naive iterative algorithm:
 //            L,10,R,12,R,12,R,6,R,10,L,10,L,10,R,12,R,12,R,10,L,10,L,12,R,6,R,6,R,10,L,10,R,10,L,10,L,12,R,6,R,6,R,10,L,10,R,10,L,10,L,12,R,6,L,10,R,12,R,12,R,10,L,10,L,12,R,6
-//{ A},{B},{ A},10,L,10,L,12,R,6,R,{B},R,10,L,10,L,12,R,6,R,{B},R,10,L,10,L,12,R,6,{ A},10,L,10,L,12,R,6
+//            {A},{B},{A},{C},{B},{C},{B},{C},{A},{C}
+//            A = L,10,R,12,R,12
+//            B = R,6,R,10,L,10
+//            C = R,10,L,10,L,12,R,6
 
-//A = L,10,R,12,R,12,R
-//B = 6,R,10,L,10
-
-//L,10,R,12,R,12,R,6,{ A},L,10,R,12,R,12,{ A},L,12,R,6,R,6,{ A},{ A},L,12,R,6,R,6,{ A},{ A},L,12,R,6,L,10,R,12,R,12,{ A},L,12,R,6
-//A = R,10,L,10
             var path = GetPath(Map);
-            return string.Join(",", path.ToLogo());
+            LogLine(string.Join(",", path.ToLogo()));
+            string[] program = new string[]
+            {
+                "A,B,A,C,B,C,B,C,A,C",
+                "L,10,R,12,R,12",
+                "R,6,R,10,L,10",
+                "R,10,L,10,L,12,R,6",
+                "n",
+                ""
+            };
+            long[] data = input.GetParts(",").Select(p => long.Parse(p)).ToArray();
+
+            var intcode = new Intcode(data);
+            intcode.Data[0] = 2;
+            foreach (var c in string.Join("\n",program))
+            {
+                intcode.InputQueue.Enqueue(c);
+            }
+            intcode.Resume();
+            return intcode.OutputQueue.Last().ToString();
         }
 
         public override string FirstTest(string input)
