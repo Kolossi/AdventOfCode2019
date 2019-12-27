@@ -95,6 +95,63 @@ namespace Runner
             return Data;
         }
 
+        public void RunAsciiComputer(string[] instructions = null)
+        {
+            bool runForever = false;
+            Queue<string> instructionQueue = null;
+
+            if (instructions == null)
+            {
+                runForever = true;
+            }
+            else
+            {
+                instructionQueue = new Queue<string>(instructions);
+            }
+
+            do
+            {
+                while (OutputQueue.Any())
+                {
+                    var val = OutputQueue.Dequeue();
+                    if (Debug) Day.Log(val < 127 ? ((char)val).ToString() : string.Format("[{0}]", val));
+                }
+                if (AwaitingInput)
+                {
+                    string instruction;
+                    if (!runForever && instructionQueue.Any())
+                    {
+                        instruction = instructionQueue.Dequeue();
+                        if (Debug) Day.LogLine(instruction);
+                    }
+                    else
+                    {
+                        instruction = Console.ReadLine();
+                    }
+                    foreach (var enteredChar in instruction)
+                    {
+                        InputQueue.Enqueue((long)enteredChar);
+                    }
+                    InputQueue.Enqueue(10);
+                }
+                Resume();
+            }
+            while ((runForever && !Halt) || (instructionQueue!= null && instructionQueue.Any()));
+        }
+
+        public string[] GetOutputQueueAsAsciiStrings()
+        {
+                        var sb = new StringBuilder();
+            while (OutputQueue.Any())
+            {
+                var val = OutputQueue.Dequeue();
+                sb.Append(val < 127 ? ((char)val).ToString() : string.Format("\n[{0}]\n", val));
+            }
+            var output = sb.ToString().Split("\n\r".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
+            return output;
+
+        }
+
         private static InstructionBlock GetInstructionBlock(long[] data, long ptr)
         {
             string command = data[ptr].ToString().PadLeft(MAXPARAMS + 2, '0');

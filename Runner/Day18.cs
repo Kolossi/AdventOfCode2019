@@ -7,16 +7,22 @@ namespace Runner
 {
     class Day18 : Day
     {
+        // takes several minutes
+        //public override string First(string input)
+        //{
+        //    var maze = new Maze(input);
+        //    maze.CreateNodeLinks();
+        //    //LogEnabled = true;
+        //    LogEnabled = false;
+        //    var route = maze.FindShortestRoute();
+        //    //var test = maze.DetectRouteLoop(new List<char>("@a@a".ToCharArray()));
+
+        //    return maze.ScoreRoute(route).ToString();
+        //}
+
         public override string First(string input)
         {
-            var maze = new Maze(input);
-            maze.CreateNodeLinks();
-            //LogEnabled = true;
-            LogEnabled = false;
-            var route = maze.FindShortestRoute();
-            //var test = maze.DetectRouteLoop(new List<char>("@a@a".ToCharArray()));
-
-            return maze.ScoreRoute(route).ToString();
+            throw new NotImplementedException("First");
         }
 
         public override string Second(string input)
@@ -24,10 +30,11 @@ namespace Runner
             throw new NotImplementedException("Second");
         }
 
-        //public override string FirstTest(string input)
-        //{
-        //    throw new NotImplementedException("FirstTest");
-        //}
+        // last test takes several minutes
+        public override string FirstTest(string input)
+        {
+            throw new NotImplementedException("FirstTest");
+        }
 
         public override string SecondTest(string input)
         {
