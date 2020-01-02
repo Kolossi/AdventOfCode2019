@@ -27,7 +27,14 @@ namespace Runner
 
         public override string Second(string input)
         {
-            throw new NotImplementedException("Second");
+            var maze = new Maze(input);
+            maze.CreateNodeLinks();
+            //LogEnabled = true;
+            LogEnabled = false;
+            var route = maze.FindShortestRoute();
+            //var test = maze.DetectRouteLoop(new List<char>("@a@a".ToCharArray()));
+
+            return maze.ScoreRoute(route).ToString();
         }
 
         // last test takes several minutes
@@ -53,6 +60,56 @@ namespace Runner
             }
         }
 
+        public class QuadMaze
+        {
+            public Maze[] Mazes;
+            public Dictionary<char, Dictionary<char, long>>[] NodeLinks = new Dictionary<char, Dictionary<char, long>>[4];
+
+            public QuadMaze(string input)
+            {
+                var originalMaze = new Maze(input);
+                var originalEntrance = originalMaze.Entrance;
+                var newWalls = new XY[]
+                {
+                    originalEntrance,
+                    originalEntrance.MoveN(),
+                    originalEntrance.MoveE(),
+                    originalEntrance.MoveS(),
+                    originalEntrance.MoveW()
+                };
+                foreach (var wall in newWalls)
+                {
+                    originalMaze.Map.Set(wall, '#');
+                }
+                var entrances = new XY[]
+                {
+                    new XY(originalEntrance.X+1,originalEntrance.Y+1),
+                    new XY(originalEntrance.X-1,originalEntrance.Y+1),
+                    new XY(originalEntrance.X-1,originalEntrance.Y-1),
+                    new XY(originalEntrance.X+1,originalEntrance.Y-1),
+                };
+                for (int i = 0; i < 4; i++)
+                {
+                    // originalEntrance = 18,18
+                    // entrance = 19,17
+                    // entrance-originalEntrance = 1,-1
+                    // (XY.X-entrance.X)*(entrance.X-originalX)>=0      19,17
+                    var maze = new Maze(originalMaze);
+                    XY entrance = entrances[i];
+                    maze.Entrance = entrance;
+                    var thisMapCoords = originalMaze.Map.GetAllCoords()
+                        .Where(xy => (xy.X - originalEntrance.X) * (entrance.X - originalEntrance.X) >= 0
+                            && (xy.Y - originalEntrance.Y) * (entrance.Y - originalEntrance.Y) >= 0);
+                    foreach (var coord in originalMaze.Map.GetAllCoords().Except(thisMapCoords))
+                    {
+                        maze.Map.Remove(coord);
+                    }
+                    maze.Keys = maze.Map.GetAllCoords().Where(c => char.IsLower(maze.Map.Get(c))).Distinct().ToList();
+                    maze.Doors = maze.Map.GetAllCoords().Where(c => char.IsUpper(maze.Map.Get(c))).Distinct().ToList();
+                }                
+            }
+        }
+
         public class Maze
         {
             public Map<char> Map;
@@ -60,6 +117,15 @@ namespace Runner
             public List<XY> Doors;
             public XY Entrance;
             public Dictionary<char, Dictionary<char, long>> NodeLinks = new Dictionary<char, Dictionary<char, long>>();
+
+            public Maze(Maze other)
+            {
+                Map = new Map<char>(other.Map);
+                Keys = new List<XY>(other.Keys);
+                Doors = new List<XY>(other.Doors);
+                Entrance = new XY(other.Entrance);
+                NodeLinks = new Dictionary<char, Dictionary<char, long>>();
+            }
 
             public Maze(string input)
             {
@@ -100,7 +166,7 @@ namespace Runner
                     mps.MyState = myState;
                     return 1;
                 }
-                StoreLinkAndIsShortest(myState.StartNode, c, mps.Path.Length);
+                StoreLink(myState.StartNode, c, mps.Path.Length);
                 return long.MaxValue; // will exit this walk
 
                 //if (!StoreLinkAndIsShortest(myState.StartNode, c, mps.Path.Length)) return long.MaxValue; // will exit this walk
@@ -120,9 +186,8 @@ namespace Runner
                 return mps.Path.XY.GetAdjacentCoords().Where(c => mps.Map.Get(c) != '#');
             }
 
-            private bool StoreLinkAndIsShortest(char from, char to, long length, bool addReverse = true)
+            private void StoreLink(char from, char to, long length, bool addReverse = true)
             {
-                bool result = false;
                 if (!NodeLinks.TryGetValue(from, out var toDict))
                 {
                     toDict = new Dictionary<char, long>();
@@ -134,14 +199,12 @@ namespace Runner
                     if (!toDict.TryGetValue(to, out var existingLength) || existingLength > length)
                     {
                         toDict[to] = length;
-                        result = true;
                     }
                 }
                 if (addReverse)
                 {
-                    result = StoreLinkAndIsShortest(to, from, length, addReverse: false) || result;
+                    StoreLink(to, from, length, addReverse: false);
                 }
-                return result;
             }
 
             internal List<char> FindShortestRoute()
